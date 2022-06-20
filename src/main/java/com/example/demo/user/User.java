@@ -20,6 +20,10 @@ public class User {
   
   private String password;
 
+  private boolean active = false;
+
+  private String activationToken;
+
   public String getUsername() {
     return username;
   }
@@ -42,6 +46,22 @@ public class User {
   
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public Boolean isActive() {
+    return active;
+  }
+
+  public void setActive(boolean active) {
+    this.active = active;
+  }
+
+  public void setActivationToken(String activationToken) {
+    this.activationToken = activationToken;
+  }
+
+  public String getActivationToken() {
+    return activationToken;
   }
   
 }

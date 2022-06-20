@@ -39,6 +39,14 @@ public class UserRegistrationTest {
     assertThat(userRepository.count()).isEqualTo(1);
   }
 
+  @Test
+  public void postUser_whenUserIsValid_saveUserInactiveModeWithActivationToken(){
+    testRestTemplate.postForEntity("/users", createValidUser(), Object.class);
+    User inDB = userRepository.findAll().get(0);
+    assertThat(inDB.isActive()).isEqualTo(false);
+    assertThat(inDB.getActivationToken()).isNotNull();
+  }
+
   private User createValidUser(){
     User user = new User();
     user.setUsername("user1");

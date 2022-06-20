@@ -1,5 +1,7 @@
 package com.example.demo.user;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +15,7 @@ public class UserController {
 
   @PostMapping("/users")
   void createUser(@RequestBody User user){
+    user.setActivationToken(UUID.randomUUID().toString());
     userRepository.save(user);
   }
   
