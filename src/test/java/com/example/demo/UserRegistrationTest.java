@@ -7,19 +7,24 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.example.demo.email.EmailSendException;
-import com.example.demo.email.EmailService;
-import com.example.demo.user.User;
-import com.example.demo.user.UserRepository;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import com.example.demo.email.EmailSendException;
+import com.example.demo.email.EmailService;
+import com.example.demo.user.User;
+import com.example.demo.user.UserRepository;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserRegistrationTest {
@@ -37,7 +42,7 @@ public class UserRegistrationTest {
   public void cleanup(){
     userRepository.deleteAll();
   }
-  
+
   @Test
   public void postUser_whenUserIsValid_returns200(){
     ResponseEntity<Object> response = testRestTemplate.postForEntity("/users", createValidUser(), Object.class);
@@ -79,20 +84,32 @@ public class UserRegistrationTest {
     assertThat(userRepository.count()).isEqualTo(0);
   }
 
-  @Test
-  public void postUser_whenUsernameIsNotValid_returns400(){
-    User user = createValidUser();
-    user.setUsername(null);
-    ResponseEntity<Object> response = testRestTemplate.postForEntity("/users", user, Object.class);
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+  private static Stream<Arguments> invalidDataProvider() {
+    return Stream.of(
+        Arguments.of("username", null, "Username cannot be null"));
   }
 
-  @Test
-  public void postUser_whenUsernameIsNotValid_returnsErrorMessage(){
-    User user = createValidUser();
-    user.setUsername(null);
+  @ParameterizedTest
+  @MethodSource("invalidDataProvider")
+  public void postUser_whenItIsNotValid_returns400WithErrorMessage(String field, String value, String errorMessage) {
+    User user = createInvalidUser(field, value);
     ResponseEntity<Object> response = testRestTemplate.postForEntity("/users", user, Object.class);
-    assertThat(response.getBody().toString()).contains("Username cannot be null");
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    assertThat(response.getBody().toString()).contains(errorMessage);
+  }
+
+  private User createInvalidUser(String field, String value) {
+    User user = createValidUser();
+    if(field.equals("username")) {
+      user.setUsername(value);
+    }
+    if(field.equals("email")) {
+      user.setEmail(value);
+    }
+    if(field.equals("password")) {
+      user.setPassword(value);
+    }
+    return user;
   }
 
   private User createValidUser(){
