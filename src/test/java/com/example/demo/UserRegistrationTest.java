@@ -47,6 +47,11 @@ public class UserRegistrationTest {
     assertThat(inDB.getActivationToken()).isNotNull();
   }
 
+  // @Test
+  // public void postUser_whenUserIsValid_sendsActivationEmail(){
+    
+  // }
+
   private User createValidUser(){
     User user = new User();
     user.setUsername("user1");
