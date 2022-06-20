@@ -79,6 +79,14 @@ public class UserRegistrationTest {
     assertThat(userRepository.count()).isEqualTo(0);
   }
 
+  @Test
+  public void postUser_whenUsernameIsNotValid_returns400(){
+    User user = createValidUser();
+    user.setUsername(null);
+    ResponseEntity<Object> response = testRestTemplate.postForEntity("/users", user, Object.class);
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+  }
+
   private User createValidUser(){
     User user = new User();
     user.setUsername("user1");
