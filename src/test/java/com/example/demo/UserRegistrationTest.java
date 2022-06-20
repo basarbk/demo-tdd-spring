@@ -29,21 +29,21 @@ public class UserRegistrationTest {
   
   @Test
   public void postUser_whenUserIsValid_returns200(){
-    User user = new User();
-    user.setUsername("user1");
-    user.setEmail("user@mail.com");
-    user.setPassword("P4ssword");
-    ResponseEntity<Object> response = testRestTemplate.postForEntity("/users", user, Object.class);
+    ResponseEntity<Object> response = testRestTemplate.postForEntity("/users", createValidUser(), Object.class);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
   }
 
   @Test
   public void postUser_whenUserIsValid_savesUserToDB(){
+    testRestTemplate.postForEntity("/users", createValidUser(), Object.class);
+    assertThat(userRepository.count()).isEqualTo(1);
+  }
+
+  private User createValidUser(){
     User user = new User();
     user.setUsername("user1");
     user.setEmail("user@mail.com");
     user.setPassword("P4ssword");
-    testRestTemplate.postForEntity("/users", user, Object.class);
-    assertThat(userRepository.count()).isEqualTo(1);
+    return user;
   }
 }
