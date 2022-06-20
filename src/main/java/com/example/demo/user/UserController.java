@@ -1,6 +1,7 @@
 package com.example.demo.user;
 
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,8 +23,15 @@ public class UserController {
 
   @PostMapping("/users")
   ResponseEntity<?> createUser(@RequestBody User user){
+    Map<String, String> errors = new HashMap<>();
     if(user.getUsername() == null || user.getUsername().isEmpty()) {
-      return ResponseEntity.status(400).body(Collections.singletonMap("username", "Username cannot be null"));
+      errors.put("username", "Username cannot be null");
+    }
+    if(user.getEmail() == null || user.getEmail().isEmpty()) {
+      errors.put("email", "E-mail cannot be null");
+    }
+    if(errors.size() > 0) {
+      return ResponseEntity.badRequest().body(errors);
     }
     userService.save(user);
     return ResponseEntity.ok().build();

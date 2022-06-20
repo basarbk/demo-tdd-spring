@@ -86,7 +86,10 @@ public class UserRegistrationTest {
 
   private static Stream<Arguments> invalidDataProvider() {
     return Stream.of(
-        Arguments.of("username", null, "Username cannot be null"));
+        Arguments.of("username", null, "Username cannot be null"),
+        Arguments.of("username", "", "Username cannot be null"),
+        Arguments.of("email", "", "E-mail cannot be null")
+      );
   }
 
   @ParameterizedTest
