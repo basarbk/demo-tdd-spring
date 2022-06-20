@@ -15,10 +15,10 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @NotBlank
+  @NotBlank(message="Username cannot be null")
   private String username;
 
-  @NotBlank
+  @NotBlank(message="E-mail cannot be null")
   private String email;
   
   private String password;
