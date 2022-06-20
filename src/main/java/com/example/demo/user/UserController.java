@@ -3,6 +3,8 @@ package com.example.demo.user;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +24,7 @@ public class UserController {
   }
 
   @PostMapping("/users")
-  ResponseEntity<?> createUser(@RequestBody User user){
+  ResponseEntity<?> createUser(@Valid @RequestBody User user){
     Map<String, String> errors = new HashMap<>();
     if(user.getUsername() == null || user.getUsername().isEmpty()) {
       errors.put("username", "Username cannot be null");
