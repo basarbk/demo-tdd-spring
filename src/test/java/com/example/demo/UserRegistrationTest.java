@@ -1,7 +1,12 @@
 package com.example.demo;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
+import com.example.demo.email.EmailService;
 import com.example.demo.user.User;
 import com.example.demo.user.UserRepository;
 
@@ -9,6 +14,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +27,9 @@ public class UserRegistrationTest {
 
   @Autowired
   UserRepository userRepository;
+
+  @MockBean
+  EmailService emailService;
 
   @AfterEach
   public void cleanup(){
@@ -47,10 +56,12 @@ public class UserRegistrationTest {
     assertThat(inDB.getActivationToken()).isNotNull();
   }
 
-  // @Test
-  // public void postUser_whenUserIsValid_sendsActivationEmail(){
-    
-  // }
+  @Test
+  public void postUser_whenUserIsValid_sendsActivationEmail(){
+    doNothing().when(emailService).sendActivationEmail(anyString(), anyString());
+    testRestTemplate.postForEntity("/users", createValidUser(), Object.class);
+    verify(emailService, times(1)).sendActivationEmail(anyString(), anyString());
+  }
 
   private User createValidUser(){
     User user = new User();
