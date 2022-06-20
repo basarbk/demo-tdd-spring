@@ -5,10 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.example.demo.user.User;
 import com.example.demo.user.UserRepository;
 
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
-import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -16,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestMethodOrder(OrderAnnotation.class)
 public class UserRegistrationTest {
 
   @Autowired
@@ -24,9 +21,13 @@ public class UserRegistrationTest {
 
   @Autowired
   UserRepository userRepository;
+
+  @AfterEach
+  public void cleanup(){
+    userRepository.deleteAll();
+  }
   
   @Test
-  @Order(1)
   public void postUser_whenUserIsValid_returns200(){
     User user = new User();
     user.setUsername("user1");
@@ -37,7 +38,6 @@ public class UserRegistrationTest {
   }
 
   @Test
-  @Order(2)
   public void postUser_whenUserIsValid_savesUserToDB(){
     User user = new User();
     user.setUsername("user1");
