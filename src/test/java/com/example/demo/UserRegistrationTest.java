@@ -87,6 +87,14 @@ public class UserRegistrationTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
+  @Test
+  public void postUser_whenUsernameIsNotValid_returnsErrorMessage(){
+    User user = createValidUser();
+    user.setUsername(null);
+    ResponseEntity<Object> response = testRestTemplate.postForEntity("/users", user, Object.class);
+    assertThat(response.getBody().toString()).contains("Username cannot be null");
+  }
+
   private User createValidUser(){
     User user = new User();
     user.setUsername("user1");
