@@ -88,7 +88,14 @@ public class UserRegistrationTest {
     return Stream.of(
         Arguments.of("username", null, "Username cannot be null"),
         Arguments.of("username", "", "Username cannot be null"),
-        Arguments.of("email", "", "E-mail cannot be null")
+        Arguments.of("email", "", "E-mail cannot be null"),
+        Arguments.of("email", null, "E-mail cannot be null"),
+        Arguments.of("email", "abc", "Incorrect e-mail format"),
+        Arguments.of("password", "password", "Password must have at least one upper case, one lower case letter and a number"),
+        Arguments.of("password", "PASSWORD", "Password must have at least one upper case, one lower case letter and a number"),
+        Arguments.of("password", "passWORD", "Password must have at least one upper case, one lower case letter and a number"),
+        Arguments.of("password", "pass1234", "Password must have at least one upper case, one lower case letter and a number"),
+        Arguments.of("password", "PASS1234", "Password must have at least one upper case, one lower case letter and a number")
       );
   }
 

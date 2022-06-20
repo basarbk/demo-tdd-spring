@@ -5,7 +5,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "users")
@@ -19,8 +21,10 @@ public class User {
   private String username;
 
   @NotBlank(message="E-mail cannot be null")
+  @Email(message="Incorrect e-mail format")
   private String email;
   
+  @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$", message="Password must have at least one upper case, one lower case letter and a number")
   private String password;
 
   private boolean active = false;
