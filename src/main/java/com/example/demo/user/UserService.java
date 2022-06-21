@@ -27,7 +27,10 @@ public class UserService {
   }
 
   public void activate(String token) {
-    userRepository.findByActivationToken(token).orElseThrow(() -> new InvalidTokenException());
+    User user = userRepository.findByActivationToken(token).orElseThrow(() -> new InvalidTokenException());
+    user.setActive(true);
+    user.setActivationToken(null);
+    userRepository.save(user);
   }
   
 }
