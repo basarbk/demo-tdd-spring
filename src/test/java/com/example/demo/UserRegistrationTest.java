@@ -3,9 +3,11 @@ package com.example.demo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.example.demo.email.EmailSendException;
 import com.example.demo.email.EmailService;
 import com.example.demo.user.User;
 import com.example.demo.user.UserRepository;
@@ -61,6 +63,13 @@ public class UserRegistrationTest {
     doNothing().when(emailService).sendActivationEmail(anyString(), anyString());
     testRestTemplate.postForEntity("/users", createValidUser(), Object.class);
     verify(emailService, times(1)).sendActivationEmail(anyString(), anyString());
+  }
+
+  @Test
+  public void postUser_whenActivationEmailFails_returns502(){
+    doThrow(EmailSendException.class).when(emailService).sendActivationEmail(anyString(), anyString());
+    ResponseEntity<Object> response = testRestTemplate.postForEntity("/users", createValidUser(), Object.class);
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_GATEWAY);
   }
 
   private User createValidUser(){

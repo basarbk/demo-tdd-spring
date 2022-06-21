@@ -12,13 +12,19 @@ public class EmailService {
   JavaMailSender mailSender;
 
   public void sendActivationEmail(String email, String activationToken) {
-    String activationUrl = "http://localhost:3000/activate/" + activationToken;
-    SimpleMailMessage message = new SimpleMailMessage(); 
-    message.setFrom("edd.welch5@ethereal.email");
-    message.setTo(email); 
-    message.setSubject("Account activation"); 
-    message.setText(activationUrl);
-    mailSender.send(message);
+
+    try {
+      String activationUrl = "http://localhost:3000/activate/" + activationToken;
+      SimpleMailMessage message = new SimpleMailMessage(); 
+      message.setFrom("edd.welch5@ethereal.email");
+      message.setTo(email); 
+      message.setSubject("Account activation"); 
+      message.setText(activationUrl);
+      mailSender.send(message);
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new EmailSendException();
+    }
   }
   
 }
