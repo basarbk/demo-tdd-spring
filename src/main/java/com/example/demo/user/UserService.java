@@ -25,5 +25,9 @@ public class UserService {
     userRepository.save(user);
     emailService.sendActivationEmail(user.getEmail(), user.getActivationToken());
   }
+
+  public void activate(String token) {
+    userRepository.findByActivationToken(token).orElseThrow(() -> new InvalidTokenException());
+  }
   
 }
