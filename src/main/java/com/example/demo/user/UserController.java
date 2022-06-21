@@ -16,5 +16,11 @@ public class UserController {
     userService.save(user);
     
   }
+
+  // @ExceptionHandler(EmailSendException.class)
+  // @ResponseStatus(HttpStatus.BAD_GATEWAY)
+  // Map<String, String> handleEmailException(){
+  //   return Collections.singletonMap("message", "E-mail send failure");
+  // }
   
 }
