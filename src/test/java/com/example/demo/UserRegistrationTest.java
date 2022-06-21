@@ -72,6 +72,13 @@ public class UserRegistrationTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_GATEWAY);
   }
 
+  @Test
+  public void postUser_whenActivationEmailFails_dontSaveUser(){
+    doThrow(EmailSendException.class).when(emailService).sendActivationEmail(anyString(), anyString());
+    testRestTemplate.postForEntity("/users", createValidUser(), Object.class);
+    assertThat(userRepository.count()).isEqualTo(0);
+  }
+
   private User createValidUser(){
     User user = new User();
     user.setUsername("user1");
